@@ -1,4 +1,3 @@
-
 import { A_END, A_START, M_END, M_START } from "../constants";
 import { CalculationParams } from "../types";
 import {

@@ -1,16 +1,12 @@
-// src/controllers/date.controller.ts
-
 import { Request, Response } from "express";
 import { getHolidays } from "../utils/holidays";
 import { calculateBusinessDate } from "../services/dateCalculator.service";
 import { SuccessResponse, ErrorResponse, CalculationParams } from "../types";
-import { log } from "console";
 
 export const getCalculatedDate = async (
   req: Request,
   res: Response<SuccessResponse | ErrorResponse>
 ): Promise<void> => {
-
   try {
     const { days, hours, date } = req.query;
 
@@ -54,15 +50,12 @@ export const getCalculatedDate = async (
     }
 
     const holidays = await getHolidays();
-    
-    
     const calculateParams: CalculationParams = {
       startDate,
       days: daysNumber,
       hours: hoursNumber,
       holidays,
     };
-
     const finalDate = await calculateBusinessDate(calculateParams);
 
     // 5. Enviar respuesta exitosa
@@ -70,6 +63,7 @@ export const getCalculatedDate = async (
       date: finalDate.toISOString(),
     });
   } catch (error) {
+
     // Manejar errores internos (ej. si no se pueden cargar los festivos)
     if (error instanceof Error && error.message.includes("holidays")) {
       res.status(503).json({

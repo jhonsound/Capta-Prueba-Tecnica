@@ -11,9 +11,7 @@ export const getHolidays = async (): Promise<string[]> => {
   try {
     const response = await axios.get<string[]>(HOLIDAYS_URL);
 
-    const holidaysData = response.data;
-
-    holidays = holidaysData;
+    holidays = response.data;
 
     console.log("✅ Holidays loaded successfully.");
     return holidays;
