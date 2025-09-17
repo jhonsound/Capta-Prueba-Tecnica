@@ -10,7 +10,6 @@ export const getCalculatedDate = async (
   req: Request,
   res: Response<SuccessResponse | ErrorResponse>
 ): Promise<void> => {
-  console.log("aqui---------------->");
 
   try {
     const { days, hours, date } = req.query;
@@ -18,7 +17,7 @@ export const getCalculatedDate = async (
     if (!days && !hours) {
       res.status(400).json({
         error: "InvalidParameters",
-        message: 'At least one of "days" or "hours" must be provided.',
+        message: 'At least one of "days" or "hours" must be provided.', //Se debe proporcionar al menos uno de "días" u "horas".
       });
       return;
     }
@@ -76,7 +75,7 @@ export const getCalculatedDate = async (
       res.status(503).json({
         error: "ServiceUnavailable",
         message:
-          "The holiday service is currently unavailable. Please try again later.",
+          "The holiday service is currently unavailable. Please try again later.", //El servicio de vacaciones no está disponible en este momento. Inténtelo de nuevo más tarde.
       });
       return;
     }
