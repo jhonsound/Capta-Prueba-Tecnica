@@ -10,17 +10,13 @@ import {
   advanceToNextBusinessDay
 } from "../utils/dateUtils";
 
-
-
 export function calculateBusinessDate({
   startDate,
   days = 0,
   hours = 0,
   holidays = [],
 }: CalculationParams): Date {
-  // Convert startDate to dayjs object in UTC
   let date: Dayjs = dayjs(startDate).utc();
-
   const initialHour: number = date.hour();
   if (
     !isBusinessDay(date, holidays) ||
@@ -30,7 +26,6 @@ export function calculateBusinessDate({
   ) {
     date = normalizeHourBackward(date, holidays, A_END, M_END, A_START, M_START);
   }
-
   let addedDays: number = 0;
   while (addedDays < days) {
     date = date.add(1, "day");
@@ -38,21 +33,17 @@ export function calculateBusinessDate({
       addedDays++;
     }
   }
-
   if (hours > 0) {
     date = normalizeHourForward(date, holidays, M_START, M_END, A_START, A_END);
   }
-
   let remainingMinutes: number = hours * 60;
   while (remainingMinutes > 0) {
     if (!isBusinessDay(date, holidays)) {
       date = advanceToNextBusinessDay(date, holidays, M_START);
       continue;
     }
-
     const h: number = date.hour();
     let blockEnd: Dayjs | null = null;
-
     if (h >= M_START && h < M_END) {
       blockEnd = date.hour(M_END).minute(0).second(0).millisecond(0);
     } else if (h >= A_START && h < A_END) {
@@ -61,10 +52,7 @@ export function calculateBusinessDate({
       date = normalizeHourForward(date, holidays, M_START, M_END, A_START, A_END);
       continue;
     }
-
     const availableMinutes: number = blockEnd.diff(date, "minute");
-    console.debug("🚀 ~ calculateBusinessDate ~ availableMinutes:", availableMinutes)
-
     if (remainingMinutes <= availableMinutes) {
       date = date.add(remainingMinutes, "minute");
       remainingMinutes = 0;
@@ -81,6 +69,5 @@ export function calculateBusinessDate({
       }
     }
   }
-
   return date.toDate();
 }

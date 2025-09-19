@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getHolidays } from "../utils/holidays";
 import { calculateBusinessDate } from "../services/dateCalculator.service";
-import { SuccessResponse, ErrorResponse, CalculationParams } from "../types";
+import { SuccessResponse, ErrorResponse, CalculationParams } from "../types/index";
 
 export const getCalculatedDate = async (
   req: Request,
@@ -13,7 +13,7 @@ export const getCalculatedDate = async (
     if (!days && !hours) {
       res.status(400).json({
         error: "InvalidParameters",
-        message: 'At least one of "days" or "hours" must be provided.', //Se debe proporcionar al menos uno de "días" u "horas".
+        message: 'At least one of "days" or "hours" must be provided.',
       });
       return;
     }
@@ -29,19 +29,18 @@ export const getCalculatedDate = async (
     ) {
       res.status(400).json({
         error: "InvalidParameters",
-        message: '"days" and "hours" must be positive integers.', // Los valores de «días» y «horas» deben ser números enteros positivos.
+        message: '"days" and "hours" must be positive integers.',
       });
       return;
     }
 
-    // 3. Determinar la fecha de inicio
     let startDate: Date;
     if (date) {
       startDate = new Date(date as string);
       if (isNaN(startDate.getTime())) {
         res.status(400).json({
           error: "InvalidParameters",
-          message: '"date" must be a valid ISO 8601 string.', // «date» debe ser una cadena válida según la norma ISO 8601
+          message: '"date" must be a valid ISO 8601 string.',
         });
         return;
       }
@@ -58,22 +57,19 @@ export const getCalculatedDate = async (
     };
     const finalDate = await calculateBusinessDate(calculateParams);
 
-    // 5. Enviar respuesta exitosa
     res.status(200).json({
       date: finalDate.toISOString(),
     });
   } catch (error) {
-
-    // Manejar errores internos (ej. si no se pueden cargar los festivos)
+    console.error("Lambda error:", error); // Log para CloudWatch
     if (error instanceof Error && error.message.includes("holidays")) {
       res.status(503).json({
         error: "ServiceUnavailable",
         message:
-          "The holiday service is currently unavailable. Please try again later.", //El servicio de vacaciones no está disponible en este momento. Inténtelo de nuevo más tarde.
+          "The holiday service is currently unavailable. Please try again later.",
       });
       return;
     }
-
     res.status(500).json({
       error: "InternalServerError",
       message: "An unexpected error occurred.",
