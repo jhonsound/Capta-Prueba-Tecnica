@@ -1,0 +1,6 @@
+{
+  "InfrastructureStack": {
+    "ApiUrl": "https://6e5a2gav1l.execute-api.us-east-1.amazonaws.com/prod/",
+    "BusinessDatesApiEndpoint3C39994A": "https://6e5a2gav1l.execute-api.us-east-1.amazonaws.com/prod/"
+  }
+}
