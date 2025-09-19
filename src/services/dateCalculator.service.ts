@@ -63,7 +63,6 @@ export function calculateBusinessDate({
     }
 
     const availableMinutes: number = blockEnd.diff(date, "minute");
-    console.debug("🚀 ~ calculateBusinessDate ~ availableMinutes:", availableMinutes)
 
     if (remainingMinutes <= availableMinutes) {
       date = date.add(remainingMinutes, "minute");
