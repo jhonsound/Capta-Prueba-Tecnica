@@ -1,6 +1,6 @@
 import { cases } from "../constants/test";
 import { calculateBusinessDate } from "../services/dateCalculator.service";
-import { getHolidays } from "../utils/holidays";
+import { holidays } from "../constants/test";
 
 // Helper para construir fecha UTC a partir de hora local Colombia (UTC-5)
 function buildUTCDateFromColombia(
@@ -15,7 +15,7 @@ function buildUTCDateFromColombia(
 }
 
 async function run() {
-  const holidays = await getHolidays();
+  /* const holidays = await getHolidays(); */
 
   for (const c of cases) {
     const result = await calculateBusinessDate({
