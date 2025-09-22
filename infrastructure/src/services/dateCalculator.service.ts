@@ -1,8 +1,10 @@
-import { A_END, A_START, M_END, M_START } from "../constants";
+import { A_END, A_START, M_END, M_START, TIMEZONE } from "../constants";
 import { CalculationParams } from "../types";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
+dayjs.extend(timezone);
 import {
   isBusinessDay,
   normalizeHourBackward,
@@ -19,7 +21,7 @@ export function calculateBusinessDate({
   holidays = [],
 }: CalculationParams): Date {
   // 1. Convertir la fecha inicial a objeto dayjs en UTC
-  let date: Dayjs = dayjs(startDate).utc();
+  let date: Dayjs = dayjs(startDate).tz(TIMEZONE);
 
   // 2. Si la fecha inicial no es hábil o está fuera de bloque, normalizar hacia atrás al último bloque hábil
   const initialHour: number = date.hour();
@@ -95,5 +97,5 @@ export function calculateBusinessDate({
   }
 
   // 6. Retornar la fecha final calculada como objeto Date
-  return date.toDate();
+  return date.tz('UTC', true).toDate();
 }
