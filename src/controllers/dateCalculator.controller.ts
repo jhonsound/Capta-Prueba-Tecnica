@@ -58,7 +58,7 @@ export const getCalculatedDate = async (
     };
     const finalDate = await calculateBusinessDate(calculateParams);
 
-    // 5. Enviar respuesta exitosa
+   // 5. Enviar respuesta exitosa
     res.status(200).json({
       date: finalDate.toISOString(),
     });
