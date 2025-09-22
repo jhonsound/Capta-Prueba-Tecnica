@@ -1,6 +1,3 @@
-// src/routes/index.ts
-// src/server.ts
-
 import express, { Application } from 'express';
 import apiRoutes from './routes';
 import { getHolidays } from './utils/holidays';
