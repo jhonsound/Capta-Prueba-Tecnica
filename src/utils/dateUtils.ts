@@ -1,16 +1,23 @@
+
 import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc);
 
+
+// Convierte una fecha a string ISO (solo fecha, sin hora)
 export function toISODateString(d: Date | Dayjs): string {
   return dayjs(d).utc().format('YYYY-MM-DD');
 }
 
+
+// Determina si una fecha es día hábil (no sábado, no domingo, no festivo)
 export function isBusinessDay(d: Date | Dayjs, holidays: string[]): boolean {
   const dow = dayjs(d).utc().day();
   return dow !== 0 && dow !== 6 && !holidays.includes(toISODateString(d));
 }
 
+
+// Retrocede hasta el día hábil más cercano (usado para normalizar fechas fuera de bloque)
 export function goBackToNearestBusinessDay(d: Date | Dayjs, holidays: string[], A_END: number): Dayjs {
   let date = dayjs(d).utc();
   while (!isBusinessDay(date, holidays)) {
@@ -19,6 +26,8 @@ export function goBackToNearestBusinessDay(d: Date | Dayjs, holidays: string[], 
   return date;
 }
 
+
+// Normaliza la hora hacia atrás al último bloque hábil disponible
 export function normalizeHourBackward(
   d: Date | Dayjs,
   holidays: string[],
@@ -41,6 +50,8 @@ export function normalizeHourBackward(
   return date;
 }
 
+
+// Avanza al siguiente día hábil y lo normaliza al inicio del bloque de la mañana
 export function advanceToNextBusinessDay(
   d: Date | Dayjs,
   holidays: string[],
@@ -54,6 +65,8 @@ export function advanceToNextBusinessDay(
   return date;
 }
 
+
+// Normaliza la hora hacia adelante al siguiente bloque hábil disponible
 export function normalizeHourForward(
   d: Date | Dayjs,
   holidays: string[],
