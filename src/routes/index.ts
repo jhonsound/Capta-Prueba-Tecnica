@@ -1,6 +1,6 @@
 
 import { Router } from 'express';
-import { getCalculatedDate } from '../controllers/date.controller';
+import { getCalculatedDate } from '../controllers/dateCalculator.controller';
 
 const router = Router();
 
