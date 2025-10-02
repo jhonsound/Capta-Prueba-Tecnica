@@ -13,7 +13,6 @@ import {
 } from "../utils/dateUtils";
 
 
-
 export function calculateBusinessDate({
   startDate,
   days = 0,
@@ -22,7 +21,6 @@ export function calculateBusinessDate({
 }: CalculationParams): Date {
   // 1. Convertir la fecha inicial a objeto dayjs en UTC
   let date: Dayjs = dayjs(startDate).tz(TIMEZONE);
-
   // 2. Si la fecha inicial no es hábil o está fuera de bloque, normalizar hacia atrás al último bloque hábil
   const initialHour: number = date.hour();
   if (
@@ -96,6 +94,7 @@ export function calculateBusinessDate({
     }
   }
 
-  // 6. Retornar la fecha final calculada como objeto Date
-  return date.tz('UTC', true).toDate();
+  // 6. Retornar la fecha final calculada como objeto Date en UTC
+  // Convertimos correctamente de hora Colombia a UTC
+  return date.utc().toDate();
 }
