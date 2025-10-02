@@ -9,19 +9,20 @@ import {
   isBusinessDay,
   normalizeHourBackward,
   normalizeHourForward,
-  advanceToNextBusinessDay
+  advanceToNextBusinessDay,
 } from "../utils/dateUtils";
-
 
 export function calculateBusinessDate({
   startDate,
   days = 0,
   hours = 0,
   holidays = [],
-}: CalculationParams): Date {
-  // 1. Convertir la fecha inicial a objeto dayjs en UTC
-  let date: Dayjs = dayjs(startDate).tz(TIMEZONE);
-  // 2. Si la fecha inicial no es hábil o está fuera de bloque, normalizar hacia atrás al último bloque hábil
+}: CalculationParams): string {
+  // 1. Convertir la fecha inicial a objeto dayjs en el timezone de Bogotá
+ /*  let date: Dayjs = dayjs.tz(startDate, TIMEZONE); */
+  let date: Dayjs = dayjs.utc(startDate).tz(TIMEZONE, true);
+
+  // 2. Si la fecha inicial no es hábil o está fuera de bloque, normalizar hacia atrás
   const initialHour: number = date.hour();
   if (
     !isBusinessDay(date, holidays) ||
@@ -29,10 +30,17 @@ export function calculateBusinessDate({
     (initialHour >= M_END && initialHour < A_START) ||
     initialHour >= A_END
   ) {
-    date = normalizeHourBackward(date, holidays, A_END, M_END, A_START, M_START);
+    date = normalizeHourBackward(
+      date,
+      holidays,
+      A_END,
+      M_END,
+      A_START,
+      M_START
+    );
   }
 
-  // 3. Sumar días hábiles, avanzando solo si el día es hábil y respetando festivos
+  // 3. Sumar días hábiles
   let addedDays: number = 0;
   while (addedDays < days) {
     date = date.add(1, "day");
@@ -41,15 +49,14 @@ export function calculateBusinessDate({
     }
   }
 
-  // 4. Si hay horas a sumar, normalizar hacia adelante al siguiente bloque hábil si es necesario
+  // 4. Si hay horas a sumar, normalizar hacia adelante al siguiente bloque hábil
   if (hours > 0) {
     date = normalizeHourForward(date, holidays, M_START, M_END, A_START, A_END);
   }
 
-  // 5. Sumar minutos hábiles, avanzando entre bloques y días hábiles según corresponda
+  // 5. Sumar minutos hábiles
   let remainingMinutes: number = hours * 60;
   while (remainingMinutes > 0) {
-    // Si no es día hábil, avanzar al siguiente día hábil y normalizar hora
     if (!isBusinessDay(date, holidays)) {
       date = advanceToNextBusinessDay(date, holidays, M_START);
       continue;
@@ -58,49 +65,42 @@ export function calculateBusinessDate({
     const h: number = date.hour();
     let blockEnd: Dayjs | null = null;
 
-    // Determinar el bloque horario actual (mañana/tarde)
     if (h >= M_START && h < M_END) {
       blockEnd = date.hour(M_END).minute(0).second(0).millisecond(0);
     } else if (h >= A_START && h < A_END) {
       blockEnd = date.hour(A_END).minute(0).second(0).millisecond(0);
     } else {
-      // Si está fuera de bloque, normalizar hacia adelante
-      date = normalizeHourForward(date, holidays, M_START, M_END, A_START, A_END);
+      date = normalizeHourForward(
+        date,
+        holidays,
+        M_START,
+        M_END,
+        A_START,
+        A_END
+      );
       continue;
     }
 
-    // Calcular minutos disponibles en el bloque actual
     const availableMinutes: number = blockEnd.diff(date, "minute");
 
     if (remainingMinutes <= availableMinutes) {
-      // Si los minutos caben en el bloque actual, sumar y terminar
       date = date.add(remainingMinutes, "minute");
       remainingMinutes = 0;
-      // Si termina justo el bloque de mañana, saltar a la tarde
+
       if (date.hour() === M_END && date.minute() === 0) {
         date = date.hour(A_START).minute(0).second(0).millisecond(0);
       }
     } else {
-      // Si los minutos exceden el bloque, avanzar al siguiente bloque/día hábil
       date = blockEnd;
       remainingMinutes -= availableMinutes;
       if (date.hour() === M_END) {
-        // Saltar a la tarde
         date = date.hour(A_START).minute(0).second(0).millisecond(0);
       } else if (date.hour() === A_END) {
-        // Saltar al siguiente día hábil por la mañana
         date = advanceToNextBusinessDay(date, holidays, M_START);
       }
     }
   }
 
-  // 6. Retornar la fecha final calculada como objeto Date en UTC
-  // Convertimos correctamente de hora Colombia a UTC
-  return date.utc().toDate();
+  // ✅ 6. Retornar la fecha en UTC
+  return date.tz("UTC").format(); // <-- este es el cambio clave
 }
-
-
-
-
-
-

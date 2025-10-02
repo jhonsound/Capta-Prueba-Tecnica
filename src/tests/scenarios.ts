@@ -33,7 +33,7 @@ async function run() {
       "hours=",
       c.params.hours
     );
-    console.log("Result:", result.toISOString());
+    console.log("Result:", result);
     if (c.expectedHint) console.log("Hint:", c.expectedHint);
   }
 }

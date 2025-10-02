@@ -41,7 +41,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "4e8d6b29510bbe45e07a1a88bfd1c86be666e0ec2e2e613cb71a2637964a6042.zip"
+     "S3Key": "b1a082bd5cd1667e78f80a3224a512b2781cbfe5528cbb118fd2630d617724b6.zip"
     },
     "Environment": {
      "Variables": {
@@ -62,7 +62,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "InfrastructureStack/BusinessDatesApiFunction/Resource",
-    "aws:asset:path": "asset.4e8d6b29510bbe45e07a1a88bfd1c86be666e0ec2e2e613cb71a2637964a6042",
+    "aws:asset:path": "asset.b1a082bd5cd1667e78f80a3224a512b2781cbfe5528cbb118fd2630d617724b6",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
