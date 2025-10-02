@@ -94,8 +94,9 @@ export function calculateBusinessDate({
     }
   }
 
-  // 6. Retornar la fecha final calculada como objeto Date
-   return date.tz('UTC', true).toDate();
+  // 6. Retornar la fecha final calculada como objeto Date en UTC
+  // Convertimos correctamente de hora Colombia a UTC
+  return date.utc().toDate();
 }
 
 
