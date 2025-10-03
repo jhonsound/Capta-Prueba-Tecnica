@@ -60,7 +60,7 @@ export const getCalculatedDate = async (
 
     // 5. Enviar respuesta exitosa
     res.status(200).json({
-      date: finalDate.toISOString(),
+      date: finalDate,
     });
   } catch (error) {
 
